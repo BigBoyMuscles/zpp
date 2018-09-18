@@ -173,23 +173,19 @@ public class RopeSystem : MonoBehaviour {
 
     private void UpdateRopePositions()
     {
-        // 1
         if (!ropeAttached)
         {
             return;
         }
-
-        // 2
+       
         ropeRenderer.positionCount = ropePositions.Count + 1;
-
-        // 3
+        
         for (var i = ropeRenderer.positionCount - 1; i >= 0; i--)
         {
             if (i != ropeRenderer.positionCount - 1) // if not the Last point of line renderer
             {
                 ropeRenderer.SetPosition(i, ropePositions[i]);
-
-                // 4
+                
                 if (i == ropePositions.Count - 1 || ropePositions.Count == 1)
                 {
                     var ropePosition = ropePositions[ropePositions.Count - 1];
@@ -212,7 +208,6 @@ public class RopeSystem : MonoBehaviour {
                         }
                     }
                 }
-                // 5
                 else if (i - 1 == ropePositions.IndexOf(ropePositions.Last()))
                 {
                     var ropePosition = ropePositions.Last();
@@ -226,7 +221,6 @@ public class RopeSystem : MonoBehaviour {
             }
             else
             {
-                // 6
                 ropeRenderer.SetPosition(i, transform.position);
             }
         }
