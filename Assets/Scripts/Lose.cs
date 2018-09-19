@@ -8,7 +8,7 @@ public class Lose : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-	    if (transform.position.y <= loseHeight)
+	    if (Input.GetKey(KeyCode.R))
 	    {
 	        SceneManager.LoadScene("Game");
 	    }

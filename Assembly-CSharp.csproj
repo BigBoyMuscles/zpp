@@ -61,10 +61,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CharacterController2D\CharacterController2D.cs" />
+    <Compile Include="Assets\demo\scripts\DemoScene.cs" />
+    <Compile Include="Assets\demo\scripts\SmoothFollow.cs" />
     <Compile Include="Assets\Scripts\CameraLerpToTransform.cs" />
     <Compile Include="Assets\Scripts\Lose.cs" />
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\RopeSystem.cs" />
+    <None Include="Assets\ProjectSettings\ProjectVersion.txt" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/zcuts/OneDrive/Documents/Unity Projects/zpp/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
