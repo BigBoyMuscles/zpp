@@ -145,6 +145,15 @@ public class RopeSystem : MonoBehaviour {
         {
             ResetRope();
         }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (ropeAttached) return;
+
+            // Fire that gun!
+            Debug.Log("Shots fired!");
+         
+        }
     }
     
     private void ResetRope()

@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\Lose.cs" />
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\RopeSystem.cs" />
+    <Compile Include="Assets\Scripts\WeaponSystem.cs" />
     <None Include="Assets\ProjectSettings\ProjectVersion.txt" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/zcuts/OneDrive/Documents/Unity Projects/zpp/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>

@@ -40,7 +40,6 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetBool("Idle", false);
             animator.SetTrigger("HorizontalInput");
-            animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
             playerSprite.flipX = horizontalInput < 0f;
             // And the player IS swinging
             if (isSwinging)
@@ -90,7 +89,6 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetBool("IsSwinging", false);
             animator.SetBool("Idle", true);
-            animator.SetFloat("Speed", 0f);
         }
 
         if (!isSwinging)
@@ -98,14 +96,11 @@ public class PlayerMovement : MonoBehaviour
             if (!groundCheck)
             {
                 //If player is grounded, do not allow jumps
-                animator.SetBool("IsAirborne", true);
                 return; 
             }
             isJumping = jumpInput > 0f;
             if (isJumping)
             {
-                
-                animator.SetFloat("Speed", Mathf.Abs(horizontalInput));
                 rBody.velocity = new Vector2(rBody.velocity.x, jumpSpeed);
             }
         }
