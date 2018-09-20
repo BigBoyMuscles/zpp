@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 using System.Linq;
 using UnityEngine;
 
-public class RopeSystem : MonoBehaviour {
+public class RopeSystem : NetworkBehaviour {
 
     public GameObject ropeHingeAnchor;
     public DistanceJoint2D ropeJoint;
@@ -17,7 +18,7 @@ public class RopeSystem : MonoBehaviour {
 
     public LineRenderer ropeRenderer;
     public LayerMask ropeLayerMask;
-    private float ropeMaxCastDistance = 8f;
+    public float ropeMaxCastDistance = 8f;
     private List<Vector2> ropePositions = new List<Vector2>();
 
     private bool distanceSet;
@@ -93,11 +94,6 @@ public class RopeSystem : MonoBehaviour {
         HandleRopeUnwrap();
     }
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-
     private void SetCrosshairPosition(float aimAngle)
     {
         if (!crosshairSprite.enabled)
@@ -126,7 +122,8 @@ public class RopeSystem : MonoBehaviour {
                 ropeAttached = true;
                 if (!ropePositions.Contains(hit.point))
                 {
-                    transform.GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, 2f), ForceMode2D.Impulse);
+                    // bump the player up a bit when the rope is fired
+                    transform.GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, 4f), ForceMode2D.Impulse); 
                     ropePositions.Add(hit.point);
                     ropeJoint.distance = Vector2.Distance(playerPosition, hit.point);
                     ropeJoint.enabled = true;
@@ -143,16 +140,19 @@ public class RopeSystem : MonoBehaviour {
 
         if (Input.GetMouseButtonUp(1))
         {
+            bool launch = false;
+            if(playerPosition.y > ropePositions.Last().y - 9 || playerPosition.y < ropePositions.Last().y + 9)
+            {
+                launch = true;
+                Debug.Log("Launching angle achieved!");
+            }
+
             ResetRope();
-        }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (ropeAttached) return;
-
-            // Fire that gun!
-            Debug.Log("Shots fired!");
-         
+            if(launch)
+            {
+                //iplement launch speed bonus for releasing rope at right time
+            }
         }
     }
     

@@ -1,29 +1,46 @@
-﻿using UnityEngine;
+﻿using UnityEngine.Networking;
+using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     public float speed = 1f;
     public float jumpSpeed = 3f;
+    public float fallMultiplier = 2.5f;
+    public float shortJumpMultiplier = 2f;
+    public float swingLaunchMultiplier = 1.8f;
     public bool groundCheck;
     public bool isSwinging;
     private SpriteRenderer playerSprite;
     private Rigidbody2D rBody;
-    private bool isJumping;
+    public bool isJumping;
     private float jumpInput;
     private float horizontalInput;
     private Animator animator;
     public Vector2 ropeHook;
     public float swingForce = 4f;
+    public float velocity;
 
     void Awake()
     {
         playerSprite = GetComponent<SpriteRenderer>();
         rBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        velocity = rBody.velocity.y;
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        GetComponent<SpriteRenderer>().color = Color.white;
     }
 
     void Update()
     {
+        velocity = rBody.velocity.y;
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
         jumpInput = Input.GetAxis("Jump");
         horizontalInput = Input.GetAxis("Horizontal");
         var halfHeight = transform.GetComponent<SpriteRenderer>().bounds.extents.y;
@@ -31,17 +48,23 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("IsSwinging", isSwinging);
         animator.SetBool("IsGrounded", groundCheck);
         animator.SetBool("IsJumping", isJumping);
+
+
+        
     }
 
     void FixedUpdate()
     {
+
+
         // If horizontal input exists
         if (horizontalInput < 0f || horizontalInput > 0f)
         {
             animator.SetBool("Idle", false);
             animator.SetTrigger("HorizontalInput");
             playerSprite.flipX = horizontalInput < 0f;
-            // And the player IS swinging
+
+            // Accelerate the player through the swing arc
             if (isSwinging)
             {
                 
@@ -63,26 +86,18 @@ public class PlayerMovement : MonoBehaviour
                     Debug.DrawLine(transform.position, rightPerpPos, Color.green, 0f);
                 }
 
-                var force = perpendicularDirection * swingForce;
+                var force = perpendicularDirection * swingForce * 1.5f;
                 rBody.AddForce(force, ForceMode2D.Force);
             }
             else // Horizontal movement, but player is NOT swinging
             {
                 animator.SetBool("IsSwinging", false);
-                if (groundCheck) // Player is moving AND grounded
-                {
-                    animator.SetBool("IsGrounded", true);
-                    var groundForce = speed * 2f;
-                    rBody.AddForce(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0));
-                    rBody.velocity = new Vector2(rBody.velocity.x, rBody.velocity.y);
-                } else // Player is moving and NOT grounded
-                {
-                    animator.SetBool("IsGrounded", false);
-                    //Allow for tighter/looser air control if needed.
-                    var groundForce = speed * 1.4f;
-                    rBody.AddForce(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0));
-                    rBody.velocity = new Vector2(rBody.velocity.x, rBody.velocity.y);
-                }
+                animator.SetBool("IsGrounded", true);
+
+                var groundForce = speed * 2f;
+                rBody.AddForce(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0));
+                rBody.velocity = new Vector2(rBody.velocity.x, rBody.velocity.y);
+
             }
         }
         else //No horizontal input
@@ -95,15 +110,25 @@ public class PlayerMovement : MonoBehaviour
         {
             if (!groundCheck)
             {
-                //If player is grounded, do not allow jumps
+                //If player is not grounded, do not allow jumps
+                if(rBody.velocity.y < 0 )
+                {
+                  rBody.velocity += Vector2.up * Physics2D.gravity * (fallMultiplier - 1) * Time.deltaTime;
+                }else if (rBody.velocity.y > 0 && !Input.GetButton("Jump"))
+                {
+                    //rBody.velocity = 
+                }
+                
                 return; 
             }
             isJumping = jumpInput > 0f;
             if (isJumping)
             {
-                rBody.velocity = new Vector2(rBody.velocity.x, jumpSpeed);
+                    rBody.velocity += Vector2.up * jumpSpeed;
             }
         }
+
+
     }
 
 }

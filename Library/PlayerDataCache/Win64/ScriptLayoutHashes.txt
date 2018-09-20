@@ -1,8 +1,7 @@
 WindowsStandalone
 PlayerPath?
-C:/Users/zcuts/OneDrive/Documents/Unity Projects/zpp/zpp.exe
+C:/Users/zcuts/OneDrive/Desktop/CharacterController2D.exe
 SceneListBegin?
-Assets/Scenes/SampleScene.unity
 Assets/Scenes/Game.unity
 SceneListEnd?
 c422dd62785a6d0afa870fbd111886ce Unity.TextMeshPro.dll:TMPro.TMP_SelectionCaret
@@ -21,8 +20,7 @@ c7dd12c15208b0447e101f80038706df UnityEngine.Timeline.dll:UnityEngine.Timeline.A
 64f3a13c1277a7f1324321d93d0ec13b UnityEngine.Timeline.dll:UnityEngine.Timeline.TimelineAsset
 f6637497451c9a030c421de4a1ad5cdb Unity.TextMeshPro.dll:TMPro.TMP_ScrollbarEventHandler
 b14b4630cc47b6e9ea8a644551a6a8cc Unity.TextMeshPro.dll:TMPro.TMP_Text
-77202671f71cf791249865bfbec13797 Assembly-CSharp.dll:Prime31.CharacterController2D
-2ffa4b0e27293690e4a8e4eb79ef6005 Assembly-CSharp.dll:.PlayerMovement
+eadb860b211b9dc7b8d5b4a38dba7e47 Assembly-CSharp.dll:.PlayerMovement
 53cefe5d98cadefbab750835e70b89c0 UnityEngine.UI.dll:UnityEngine.UI.AspectRatioFitter
 486cd95c82d8305219c352c06b776e1f UnityEngine.UI.dll:UnityEngine.EventSystems.BaseInput
 da2091a04d360891450faf16cdf621f1 UnityEngine.UI.dll:UnityEngine.UI.Button
@@ -164,11 +162,9 @@ e1ea12ca952c81d81a9a21fdf34446ed UnityEngine.HoloLens.dll:UnityEngine.EventSyste
 dfd33ff9ae3ce8d7ca1f22b475ec2387 UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.SpatialMappingRenderer
 aac9c55ae7ba4b95b852a7d9c191acd1 Unity.TextMeshPro.dll:TMPro.TextMeshProUGUI
 0a006f3734181ba8b26758f0866152c0 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
+cf9bd0c8231bd430c0e9eef5f91093fe Assembly-CSharp.dll:.WeaponSystem
 e04611b8715e6833d2bd7010fc6be10b Unity.TextMeshPro.dll:TMPro.TMP_StyleSheet
 2f9af06a78208a67db480e9bfed4a076 Unity.TextMeshPro.dll:TMPro.TextMeshPro
 9318334b30e9f195f573b2ce00154b95 Unity.TextMeshPro.dll:TMPro.TMP_ColorGradient
-376bd1d4262abfa869de62e06789746f Assembly-CSharp.dll:.RopeSystem
+28352a3b2addf63feba13080461291c8 Assembly-CSharp.dll:.RopeSystem
 93307bd34e39d73fd24e00ec39c25a91 Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
-55e97665d395a73dfc17dd5ee5210fe8 Assembly-CSharp.dll:.DemoScene
-fa84c0483cdf15af1a988b817b822330 Assembly-CSharp.dll:.SmoothFollow
-5b30f13b18bf8d3b66541c48d4032cba Assembly-CSharp.dll:.WeaponSystem

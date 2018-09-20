@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 using UnityEngine;
 
-public class WeaponSystem : MonoBehaviour {
+public class WeaponSystem : NetworkBehaviour {
 
     private Vector2 playerPosition;
     private float maxRange = 15f;
     public LayerMask targetMask;
+    public GameObject bulletPrefab;
     // Use this for initialization
     void Start () {
 		
