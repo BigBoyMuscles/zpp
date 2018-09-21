@@ -119,11 +119,16 @@ public class RopeSystem : NetworkBehaviour {
             
             if (hit.collider != null)
             {
+                // bump the player up a bit when the rope is fired
+                if (playerMovement.groundCheck)
+                {
+                    transform.GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, 4f), ForceMode2D.Impulse);
+                }
                 ropeAttached = true;
                 if (!ropePositions.Contains(hit.point))
                 {
-                    // bump the player up a bit when the rope is fired
-                    transform.GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, 4f), ForceMode2D.Impulse); 
+
+                    
                     ropePositions.Add(hit.point);
                     ropeJoint.distance = Vector2.Distance(playerPosition, hit.point);
                     ropeJoint.enabled = true;

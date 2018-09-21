@@ -8,6 +8,7 @@ public class PlayerMovement : NetworkBehaviour
     public float fallMultiplier = 2.5f;
     public float shortJumpMultiplier = 2f;
     public float swingLaunchMultiplier = 1.8f;
+    public float dashSpeed = 7;
     public bool groundCheck;
     public bool isSwinging;
     private SpriteRenderer playerSprite;
@@ -48,68 +49,76 @@ public class PlayerMovement : NetworkBehaviour
         animator.SetBool("IsSwinging", isSwinging);
         animator.SetBool("IsGrounded", groundCheck);
         animator.SetBool("IsJumping", isJumping);
-
-
         
     }
 
     void FixedUpdate()
     {
 
+        Debug.DrawRay(transform.position, Vector2.down, Color.red, .75f);
 
         // If horizontal input exists
-        if (horizontalInput < 0f || horizontalInput > 0f)
-        {
-            animator.SetBool("Idle", false);
-            animator.SetTrigger("HorizontalInput");
-            playerSprite.flipX = horizontalInput < 0f;
-
-            // Accelerate the player through the swing arc
-            if (isSwinging)
+            if (horizontalInput < 0f || horizontalInput > 0f)
             {
-                
-                // Get a normalized direction vector from the player to the hook point
-                var playerToHookDirection = (ropeHook - (Vector2)transform.position).normalized;
+                animator.SetBool("Idle", false);
+                animator.SetTrigger("HorizontalInput");
+                playerSprite.flipX = horizontalInput < 0f;
 
-                // Inverse the direction to get a perpendicular direction
-                Vector2 perpendicularDirection;
-                if (horizontalInput < 0)
+                // Accelerate the player through the swing arc
+                if (isSwinging)
                 {
-                    perpendicularDirection = new Vector2(-playerToHookDirection.y, playerToHookDirection.x);
-                    var leftPerpPos = (Vector2)transform.position - perpendicularDirection * -2f;
-                    Debug.DrawLine(transform.position, leftPerpPos, Color.green, 0f);
-                }
-                else
-                {
-                    perpendicularDirection = new Vector2(playerToHookDirection.y, -playerToHookDirection.x);
-                    var rightPerpPos = (Vector2)transform.position + perpendicularDirection * 2f;
-                    Debug.DrawLine(transform.position, rightPerpPos, Color.green, 0f);
-                }
 
-                var force = perpendicularDirection * swingForce * 1.5f;
-                rBody.AddForce(force, ForceMode2D.Force);
+                    // Get a normalized direction vector from the player to the hook point
+                    var playerToHookDirection = (ropeHook - (Vector2)transform.position).normalized;
+
+                    // Inverse the direction to get a perpendicular direction
+                    Vector2 perpendicularDirection;
+                    if (horizontalInput < 0)
+                    {
+                        perpendicularDirection = new Vector2(-playerToHookDirection.y, playerToHookDirection.x);
+                        var leftPerpPos = (Vector2)transform.position - perpendicularDirection * -2f;
+                        Debug.DrawLine(transform.position, leftPerpPos, Color.green, 0f);
+                    }
+                    else
+                    {
+                        perpendicularDirection = new Vector2(playerToHookDirection.y, -playerToHookDirection.x);
+                        var rightPerpPos = (Vector2)transform.position + perpendicularDirection * 2f;
+                        Debug.DrawLine(transform.position, rightPerpPos, Color.green, 0f);
+                    }
+
+                    var force = perpendicularDirection * swingForce * 1.5f;
+                    rBody.AddForce(force, ForceMode2D.Force);
+                }
+                else // Horizontal movement, but player is NOT swinging
+                {
+                    animator.SetBool("IsSwinging", false);
+                    animator.SetBool("IsGrounded", true);
+
+                    var groundForce = speed * 2f;
+                    rBody.AddForce(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0));
+                    rBody.velocity = new Vector2(rBody.velocity.x, rBody.velocity.y);
+
+                }
             }
-            else // Horizontal movement, but player is NOT swinging
+            else //No horizontal input
             {
                 animator.SetBool("IsSwinging", false);
-                animator.SetBool("IsGrounded", true);
-
-                var groundForce = speed * 2f;
-                rBody.AddForce(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0));
-                rBody.velocity = new Vector2(rBody.velocity.x, rBody.velocity.y);
-
+                animator.SetBool("Idle", true);
             }
-        }
-        else //No horizontal input
-        {
-            animator.SetBool("IsSwinging", false);
-            animator.SetBool("Idle", true);
-        }
+        
 
         if (!isSwinging)
         {
             if (!groundCheck)
             {
+
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+
+                    rBody.AddForce(Vector2.right * Input.GetAxisRaw("Horizontal") * dashSpeed * 10, ForceMode2D.Impulse);
+                        
+                }
+
                 //If player is not grounded, do not allow jumps
                 if(rBody.velocity.y < 0 )
                 {

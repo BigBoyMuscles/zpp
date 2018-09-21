@@ -7,6 +7,7 @@ public class WeaponSystem : NetworkBehaviour {
 
     private Vector2 playerPosition;
     private float maxRange = 15f;
+    public Transform crosshair;
     public LayerMask targetMask;
     public GameObject bulletPrefab;
     // Use this for initialization
@@ -31,13 +32,8 @@ public class WeaponSystem : NetworkBehaviour {
     {
         if (Input.GetMouseButtonDown(0))
         {
-            var hit = Physics2D.Raycast(playerPosition, aimDirection, maxRange, targetMask);
-
-            if (hit.collider != null)
-            {
-                // Hnadle hitscat weapons here.
-                Debug.Log("Shots fired!");
-            }
+            //var hit = Physics2D.Raycast(playerPosition, aimDirection, maxRange, targetMask);
+            GameObject.Instantiate(bulletPrefab);
         }
     }
 }
