@@ -4,7 +4,8 @@ using UnityEngine.Networking;
 using System.Linq;
 using UnityEngine;
 
-public class RopeSystem : NetworkBehaviour {
+public class RopeSystem : NetworkBehaviour
+{
 
     public GameObject ropeHingeAnchor;
     public DistanceJoint2D ropeJoint;
@@ -22,7 +23,7 @@ public class RopeSystem : NetworkBehaviour {
     private List<Vector2> ropePositions = new List<Vector2>();
 
     private bool distanceSet;
-
+    public bool launch;
     public float climbSpeed = 3f;
     private bool isColliding;
 
@@ -31,6 +32,7 @@ public class RopeSystem : NetworkBehaviour {
     private void Awake()
     {
         ropeJoint.enabled = false;
+        launch = false;
         playerPosition = transform.position;
         ropeHingeAnchorRb = ropeHingeAnchor.GetComponent<Rigidbody2D>();
         ropeHingeAnchorSprite = ropeHingeAnchor.GetComponent<SpriteRenderer>();
@@ -39,6 +41,10 @@ public class RopeSystem : NetworkBehaviour {
 
     private void Update()
     {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
         var worldMousePosition =
                 Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f));
         var facingDirection = worldMousePosition - transform.position;
@@ -110,7 +116,7 @@ public class RopeSystem : NetworkBehaviour {
 
     private void HandleInput(Vector2 aimDirection)
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButton(1))
         {
             if (ropeAttached) return;
             ropeRenderer.enabled = true;
@@ -145,8 +151,8 @@ public class RopeSystem : NetworkBehaviour {
 
         if (Input.GetMouseButtonUp(1))
         {
-            bool launch = false;
-            if(playerPosition.y > ropePositions.Last().y - 9 || playerPosition.y < ropePositions.Last().y + 9)
+            
+            if(playerPosition.y > ropePositions.Last().y - 18 || playerPosition.y < ropePositions.Last().y + 9)
             {
                 launch = true;
                 Debug.Log("Launching angle achieved!");
@@ -156,7 +162,7 @@ public class RopeSystem : NetworkBehaviour {
 
             if(launch)
             {
-                //iplement launch speed bonus for releasing rope at right time
+                playerMovement.velocity = playerMovement.velocity * 3f;
             }
         }
     }

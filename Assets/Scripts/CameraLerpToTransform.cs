@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using UnityEngine.Networking;
+using UnityEngine;
 
-public class CameraLerpToTransform : MonoBehaviour
+public class CameraLerpToTransform : NetworkBehaviour
 {
     public Transform target;
     public float speed;
@@ -10,6 +11,10 @@ public class CameraLerpToTransform : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
         var newPosition = Vector2.Lerp(transform.position, target.position, Time.deltaTime * speed);
         var camPosition = new Vector3(newPosition.x, newPosition.y, cameraDepth);
         var v3 = camPosition;

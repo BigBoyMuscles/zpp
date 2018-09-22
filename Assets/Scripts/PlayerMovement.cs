@@ -5,6 +5,8 @@ public class PlayerMovement : NetworkBehaviour
 {
     public float speed = 1f;
     public float jumpSpeed = 3f;
+    public float airSpeed = 4.8f;
+    public float maxAirSpeed = 20f;
     public float fallMultiplier = 2.5f;
     public float shortJumpMultiplier = 2f;
     public float swingLaunchMultiplier = 1.8f;
@@ -37,6 +39,7 @@ public class PlayerMovement : NetworkBehaviour
     void Update()
     {
         velocity = rBody.velocity.y;
+
         if (!isLocalPlayer)
         {
             return;
@@ -54,6 +57,11 @@ public class PlayerMovement : NetworkBehaviour
 
     void FixedUpdate()
     {
+
+        if (!isLocalPlayer)
+        {
+            return;
+        }
 
         Debug.DrawRay(transform.position, Vector2.down, Color.red, .75f);
 
@@ -97,6 +105,10 @@ public class PlayerMovement : NetworkBehaviour
                     var groundForce = speed * 2f;
                     rBody.AddForce(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0));
                     rBody.velocity = new Vector2(rBody.velocity.x, rBody.velocity.y);
+                    
+                    
+                    
+
 
                 }
             }
@@ -114,8 +126,15 @@ public class PlayerMovement : NetworkBehaviour
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-
-                    rBody.AddForce(Vector2.right * Input.GetAxisRaw("Horizontal") * dashSpeed * 10, ForceMode2D.Impulse);
+                    int i = 0;
+                    if(rBody.velocity.x > 0)
+                    {
+                        i = 1;
+                    }else
+                    {
+                        i = -2;
+                    }
+                    rBody.AddForce(Vector2.right * i * dashSpeed * 10, ForceMode2D.Impulse);
                         
                 }
 
