@@ -45,6 +45,7 @@ public class RopeSystem : NetworkBehaviour
         {
             return;
         }
+
         var worldMousePosition =
                 Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f));
         var facingDirection = worldMousePosition - transform.position;
@@ -107,8 +108,8 @@ public class RopeSystem : NetworkBehaviour
             crosshairSprite.enabled = true;
         }
 
-        var x = transform.position.x + 1f * Mathf.Cos(aimAngle);
-        var y = transform.position.y + 1f * Mathf.Sin(aimAngle);
+        var x = transform.position.x + 3f * Mathf.Cos(aimAngle);
+        var y = transform.position.y + 3f * Mathf.Sin(aimAngle);
 
         var crossHairPosition = new Vector3(x, y, 0);
         crosshair.transform.position = crossHairPosition;
