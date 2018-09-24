@@ -10,6 +10,7 @@ public class WeaponSystem : NetworkBehaviour {
     public Transform crosshair;
     public LayerMask targetMask;
     public GameObject bulletPrefab;
+    public GameObject bulletSpawn;
     // Use this for initialization
     void Start () {
 		
@@ -26,6 +27,7 @@ public class WeaponSystem : NetworkBehaviour {
         }
         var aimDirection = Quaternion.Euler(0, 0, aimAngle * Mathf.Rad2Deg) * Vector2.right;
         playerPosition = transform.position;
+        handleInput(aimDirection);
     }
 
     private void handleInput(Vector2 aimDirection)
