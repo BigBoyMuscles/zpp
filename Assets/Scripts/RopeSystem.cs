@@ -150,21 +150,11 @@ public class RopeSystem : NetworkBehaviour
             }
         }
 
+        // Use this section to apply effects when the rope is release within the angles specified
         if (Input.GetMouseButtonUp(1))
         {
-            
-            if(playerPosition.y > ropePositions.Last().y - 18 || playerPosition.y < ropePositions.Last().y + 9)
-            {
-                launch = true;
-                Debug.Log("Launching angle achieved!");
-            }
-
             ResetRope();
 
-            if(launch)
-            {
-                playerMovement.velocity = playerMovement.velocity * 3f;
-            }
         }
     }
     

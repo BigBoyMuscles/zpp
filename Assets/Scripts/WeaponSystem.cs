@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 using UnityEngine;
 
-public class WeaponSystem : MonoBehaviour {
+public class WeaponSystem : NetworkBehaviour {
 
     private Vector2 playerPosition;
     public Transform projectileSpawn;
@@ -14,19 +15,22 @@ public class WeaponSystem : MonoBehaviour {
         playerPosition = transform.position;
     }
 
+    public override void OnStartLocalPlayer()
+    {
+        
+    }
+
     // Update is called once per frame
     void Update() {
-
-
-        if (Input.GetButtonDown("Fire1"))
-        {if(!playerMovement.isSwinging)
+            if (Input.GetButtonDown("Fire1"))
             {
-                StartCoroutine(Shoot());
+                if (!playerMovement.isSwinging)
+                {
+                    StartCoroutine(Shoot());
+                }
+
             }
             
-        }
-
-
     }
 
     IEnumerator Shoot()
