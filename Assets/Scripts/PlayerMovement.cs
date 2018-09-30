@@ -25,26 +25,27 @@ public class PlayerMovement : NetworkBehaviour
 
     void Awake()
     {
+
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        GetComponent<SpriteRenderer>().color = Color.white;
         playerSprite = GetComponent<SpriteRenderer>();
         rBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         velocity = rBody.velocity.y;
     }
 
-    public override void OnStartLocalPlayer()
-    {
-        GetComponent<SpriteRenderer>().color = Color.white;
-    }
-
     void Update()
     {
-        velocity = rBody.velocity.y;
+        
 
         if (!isLocalPlayer)
         {
             return;
         }
-
+        velocity = rBody.velocity.y;
         jumpInput = Input.GetAxis("Jump");
         horizontalInput = Input.GetAxis("Horizontal");
         var halfHeight = transform.GetComponent<SpriteRenderer>().bounds.extents.y;
@@ -65,14 +66,14 @@ public class PlayerMovement : NetworkBehaviour
 
         Debug.DrawRay(transform.position, Vector2.down, Color.red, .75f);
 
-        // If horizontal input exists
+        // Horizontal Input Exists
         if (horizontalInput < 0f || horizontalInput > 0f)
         {
             animator.SetBool("Idle", false);
             animator.SetTrigger("HorizontalInput");
             playerSprite.flipX = horizontalInput < 0f;
 
-            // Accelerate the player through the swing arc
+            
             if (isSwinging)
             {
 
@@ -93,9 +94,11 @@ public class PlayerMovement : NetworkBehaviour
                     var rightPerpPos = (Vector2)transform.position + perpendicularDirection * 2f;
                     Debug.DrawLine(transform.position, rightPerpPos, Color.green, 0f);
                 }
+                    // Apply swinging force perpindicular to rope contact point
+                    var force = perpendicularDirection * swingForce * 1.5f;
+                    rBody.AddForce(force, ForceMode2D.Force);
 
-                var force = perpendicularDirection * swingForce * 1.5f;
-                rBody.AddForce(force, ForceMode2D.Force);
+                
             }
             else // Horizontal movement, but player is NOT swinging
             {
@@ -104,11 +107,7 @@ public class PlayerMovement : NetworkBehaviour
 
                 var groundForce = speed * 2f;
                 rBody.AddForce(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0));
-                rBody.velocity = new Vector2(rBody.velocity.x, rBody.velocity.y);
-
-
-
-
+                rBody.velocity += Vector2.right * horizontalInput;
 
             }
         }
@@ -124,29 +123,10 @@ public class PlayerMovement : NetworkBehaviour
             if (!groundCheck)
             {
 
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    int i = 0;
-                    if (rBody.velocity.x > 0)
-                    {
-                        i = 1;
-                    }
-                    else
-                    {
-                        i = -2;
-                    }
-                    rBody.AddForce(Vector2.right * i * dashSpeed * 10, ForceMode2D.Impulse);
-
-                }
-
-                //If player is not grounded, do not allow jumps
+                //Apply fall modifier to gravity once player reaches the peak of jump
                 if (rBody.velocity.y < 0)
                 {
                     rBody.velocity += Vector2.up * Physics2D.gravity * (fallMultiplier - 1) * Time.deltaTime;
-                }
-                else if (rBody.velocity.y > 0 && !Input.GetButton("Jump"))
-                {
-                    //rBody.velocity = 
                 }
 
                 return;
