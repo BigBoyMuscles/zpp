@@ -1,37 +1,21 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
-
-    public float dampTime;
-    private Vector3 velocity = Vector3.zero;
-    public Transform target;
-    private Camera cam;
-
-
-    private void Awake()
-    {
-        cam = GetComponent<Camera>();
-
-    }
+    public Transform playerTransform;
+    public int depth = -20;
 
     // Update is called once per frame
     void Update()
     {
-
-        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        updateCameraPosition();
+        if (playerTransform != null)
+        {
+            transform.position = playerTransform.position + new Vector3(0, 10, depth);
+        }
     }
 
-    void updateCameraPosition()
+    public void setTarget(Transform target)
     {
-        if (target)
-        {
-            Vector3 point = cam.WorldToViewportPoint(target.position);
-            Vector3 delta = target.position - cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, point.z)); //(new Vector3(0.5, 0.5, point.z));
-            Vector3 destination = transform.position + delta;
-            transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
-        }
+        playerTransform = target;
     }
 }

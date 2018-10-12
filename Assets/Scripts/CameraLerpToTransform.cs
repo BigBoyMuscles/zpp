@@ -4,6 +4,7 @@ using UnityEngine;
 public class CameraLerpToTransform : NetworkBehaviour
 {
     public Transform target;
+    public NetworkManager network;
     public float speed;
     public float cameraDepth = -10f;
     public float minX, minY, maxX, maxY;
@@ -15,6 +16,8 @@ public class CameraLerpToTransform : NetworkBehaviour
         {
             return;
         }
+
+        
         var newPosition = Vector2.Lerp(transform.position, target.position, Time.deltaTime * speed);
         var camPosition = new Vector3(newPosition.x, newPosition.y, cameraDepth);
         var v3 = camPosition;

@@ -1,5 +1,6 @@
 ﻿using UnityEngine.Networking;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerMovement : NetworkBehaviour
 {
@@ -23,11 +24,16 @@ public class PlayerMovement : NetworkBehaviour
     public float swingForce = 4f;
     public float velocity;
 
+    public float minCamDistance = 24;
+    public float maxCamDistance = 30;
+
+    public CinemachineVirtualCamera vcam;
+
     void Awake()
     {
 
     }
-
+    
     public override void OnStartLocalPlayer()
     {
         GetComponent<SpriteRenderer>().color = Color.white;
@@ -35,6 +41,7 @@ public class PlayerMovement : NetworkBehaviour
         rBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         velocity = rBody.velocity.y;
+        //Camera.main.GetComponent<CameraController>().setTarget(gameObject.transform);
     }
 
     void Update()
@@ -54,6 +61,9 @@ public class PlayerMovement : NetworkBehaviour
         animator.SetBool("IsGrounded", groundCheck);
         animator.SetBool("IsJumping", isJumping);
 
+        
+        
+
     }
 
     void FixedUpdate()
@@ -63,6 +73,21 @@ public class PlayerMovement : NetworkBehaviour
         {
             return;
         }
+
+            var p = Mathf.Lerp(vcam.m_Lens.OrthographicSize, rBody.velocity.magnitude, Time.deltaTime);
+
+            if(p > minCamDistance && p < maxCamDistance)
+            {
+                vcam.m_Lens.OrthographicSize = p;
+            } else if(p <= minCamDistance){
+            vcam.m_Lens.OrthographicSize = minCamDistance;
+            } else if(p >= maxCamDistance)
+        {
+            vcam.m_Lens.OrthographicSize = maxCamDistance;
+        }
+            
+
+        
 
         Debug.DrawRay(transform.position, Vector2.down, Color.red, .75f);
 
