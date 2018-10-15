@@ -52,11 +52,11 @@ public class PlayerMovement : NetworkBehaviour
         {
             return;
         }
-        velocity = rBody.velocity.y;
+
         jumpInput = Input.GetAxis("Jump");
         horizontalInput = Input.GetAxis("Horizontal");
-        var halfHeight = transform.GetComponent<SpriteRenderer>().bounds.extents.y;
-        groundCheck = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - halfHeight - 0.04f), Vector2.down, 0.025f);
+        
+        
         animator.SetBool("IsSwinging", isSwinging);
         animator.SetBool("IsGrounded", groundCheck);
         animator.SetBool("IsJumping", isJumping);
@@ -74,56 +74,23 @@ public class PlayerMovement : NetworkBehaviour
             return;
         }
 
-            var p = Mathf.Lerp(vcam.m_Lens.OrthographicSize, rBody.velocity.magnitude, Time.deltaTime);
+        var halfHeight = transform.GetComponent<SpriteRenderer>().bounds.extents.y;
+        groundCheck = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - halfHeight - 0.04f), Vector2.down, 0.025f);
+        cameraZoom();
 
-            if(p > minCamDistance && p < maxCamDistance)
-            {
-                vcam.m_Lens.OrthographicSize = p;
-            } else if(p <= minCamDistance){
-            vcam.m_Lens.OrthographicSize = minCamDistance;
-            } else if(p >= maxCamDistance)
-        {
-            vcam.m_Lens.OrthographicSize = maxCamDistance;
-        }
-            
-
-        
-
-        Debug.DrawRay(transform.position, Vector2.down, Color.red, .75f);
+        // Use this to track player jump arc for debug
+        // Debug.DrawRay(transform.position, Vector2.down, Color.red, .75f);
 
         // Horizontal Input Exists
         if (horizontalInput < 0f || horizontalInput > 0f)
         {
             animator.SetBool("Idle", false);
             animator.SetTrigger("HorizontalInput");
-            playerSprite.flipX = horizontalInput < 0f;
+            playerSprite.flipX = rBody.velocity.x < 0f;
 
-            
             if (isSwinging)
             {
-
-                // Get a normalized direction vector from the player to the hook point
-                var playerToHookDirection = (ropeHook - (Vector2)transform.position).normalized;
-
-                // Inverse the direction to get a perpendicular direction
-                Vector2 perpendicularDirection;
-                if (horizontalInput < 0)
-                {
-                    perpendicularDirection = new Vector2(-playerToHookDirection.y, playerToHookDirection.x);
-                    var leftPerpPos = (Vector2)transform.position - perpendicularDirection * -2f;
-                    Debug.DrawLine(transform.position, leftPerpPos, Color.green, 0f);
-                }
-                else
-                {
-                    perpendicularDirection = new Vector2(playerToHookDirection.y, -playerToHookDirection.x);
-                    var rightPerpPos = (Vector2)transform.position + perpendicularDirection * 2f;
-                    Debug.DrawLine(transform.position, rightPerpPos, Color.green, 0f);
-                }
-                    // Apply swinging force perpindicular to rope contact point
-                    var force = perpendicularDirection * swingForce * 1.5f;
-                    rBody.AddForce(force, ForceMode2D.Force);
-
-                
+                applySwingForce();
             }
             else // Horizontal movement, but player is NOT swinging
             {
@@ -131,8 +98,19 @@ public class PlayerMovement : NetworkBehaviour
                 animator.SetBool("IsGrounded", true);
 
                 var groundForce = speed * 2f;
-                rBody.AddForce(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0));
-                rBody.velocity += Vector2.right * horizontalInput;
+                if (groundCheck)
+                {
+
+                    Debug.Log(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0));
+                    rBody.AddForce(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0), ForceMode2D.Force);
+                    rBody.velocity += Vector2.right * horizontalInput;
+                }else
+                {
+                    Vector2 temp = rBody.velocity;
+                   
+                    rBody.AddForce(new Vector2((horizontalInput * groundForce - rBody.velocity.x) * groundForce, 0), ForceMode2D.Force);
+                    //rBody.velocity += Vector2.right * horizontalInput;
+                }
 
             }
         }
@@ -164,6 +142,50 @@ public class PlayerMovement : NetworkBehaviour
         }
 
 
+    }
+
+    void applySwingForce()
+    {
+        // Get a normalized direction vector from the player to the hook point
+        var playerToHookDirection = (ropeHook - (Vector2)transform.position).normalized;
+
+        // Inverse the direction to get a perpendicular direction
+        Vector2 perpendicularDirection;
+        if (horizontalInput < 0)
+        {
+            perpendicularDirection = new Vector2(-playerToHookDirection.y, playerToHookDirection.x);
+            var leftPerpPos = (Vector2)transform.position - perpendicularDirection * -2f;
+            Debug.DrawLine(transform.position, leftPerpPos, Color.green, 0f);
+        }
+        else
+        {
+            perpendicularDirection = new Vector2(playerToHookDirection.y, -playerToHookDirection.x);
+            var rightPerpPos = (Vector2)transform.position + perpendicularDirection * 2f;
+            Debug.DrawLine(transform.position, rightPerpPos, Color.green, 0f);
+        }
+        // Apply swinging force perpindicular to rope contact point
+        var force = perpendicularDirection * swingForce * 1.5f;
+        rBody.AddForce(force, ForceMode2D.Force);
+    }
+
+    void cameraZoom()
+    {
+        // Move camera back when player moves faster, zoom back in when player slows down.
+        var p = Mathf.Lerp(vcam.m_Lens.OrthographicSize, rBody.velocity.magnitude, Time.deltaTime);
+
+        // Keep camera within acceptable distance from player
+        if (p > minCamDistance && p < maxCamDistance)
+        {
+            vcam.m_Lens.OrthographicSize = p;
+        }
+        else if (p <= minCamDistance)
+        {
+            vcam.m_Lens.OrthographicSize = minCamDistance;
+        }
+        else if (p >= maxCamDistance)
+        {
+            vcam.m_Lens.OrthographicSize = maxCamDistance;
+        }
     }
 
 }

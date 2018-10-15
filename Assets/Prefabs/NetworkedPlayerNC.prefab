@@ -442,7 +442,7 @@ MonoBehaviour:
   speed: 11
   jumpSpeed: 15
   airSpeed: 4
-  maxAirSpeed: 20
+  maxAirSpeed: 85
   fallMultiplier: 4
   shortJumpMultiplier: 1.5
   swingLaunchMultiplier: 5
